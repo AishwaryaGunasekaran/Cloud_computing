@@ -1,17 +1,23 @@
-FROM ubuntu:latest
+# Use an official Node.js runtime as a parent image
+FROM node:14
 
-# Set the working directory in the image
-WORKDIR /app
+# Set the working directory in the container
+WORKDIR /work
 
-# Copy the files from the host file system to the image file system
-COPY . /app
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Install the necessary packages
-RUN apt-get update && apt-get install -y python3 python3-pip
+# Install any needed packages
+RUN npm install
 
-# Set environment variables
+# Copy the rest of the application code
+COPY . .
 
-ENV NAME World
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
 
-# Run a command to start the application
-CMD ["python3", "app.py"]
+# Define environment variable
+ENV NODE_ENV=production
+
+# Run the app when the container launches
+CMD ["node", "index.js"]
